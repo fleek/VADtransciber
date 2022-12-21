@@ -17,5 +17,5 @@ This program has been created to be modular, not with efficiency in mind.
 
 For installation please install the necessary dependencies in requirements.txt and also refer to https://pytorch.org/get-started/previous-versions/ for installation of the necessary cuda support.
 
-
+Please also obtain your own pyannote token
 

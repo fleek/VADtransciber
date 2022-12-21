@@ -2,7 +2,7 @@
 
 This app was created specifically for my use case and not optimized.
 
-It combines processing into several AI models into one app to automate the transcription of .wav and .mp4 files.
+It combines processing from several AI models into one app to automate the transcription of .wav and .mp4 files.
 
 1.  Convert audio into the best format the model was trained on.
 2.  Perform VAD using silero-vad (https://github.com/snakers4/silero-vad) I find as the most accurate so far and dump the slice info into json.

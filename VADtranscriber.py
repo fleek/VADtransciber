@@ -172,7 +172,7 @@ def localdiarise(src,dest):
     dlist = []
     print(Fore.GREEN+"Loading Diarization Model")
     pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1",
-                                        use_auth_token="")
+                                        use_auth_token=<PyAnnote token>)
 
     print(Fore.GREEN+"Loading Audio")
     diarization = pipeline(src)

@@ -19,3 +19,5 @@ For installation please install the necessary dependencies in requirements.txt a
 
 Please also obtain your own pyannote token
 
+I have used python 3.8 as some of the libraries does not support 3.10 yet.
+

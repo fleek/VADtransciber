@@ -27,7 +27,9 @@ def convertWav(src):
     ).overwrite_output().run(quiet=True)
 
 
+
 def performVAD(src):
+
     print(Fore.GREEN + f"Loading Silero VAD model")
     smodel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
                                    model='silero_vad',
@@ -155,6 +157,8 @@ def PopulateSpeakers(src):
 
 def TranscriptionPipe(src, modelsize, device):
     #clearworkfolders()
+    create_folder('./work')
+    create_folder('./vad')
     convertWav(src)
     wav, st = performVAD(src)
     localdiarise("work/" + os.path.splitext(os.path.basename(src))[0] + "_temp.wav","work/" + os.path.splitext(os.path.basename(src))[0] + "_diarise.json")
@@ -167,6 +171,7 @@ def diarise(src):
     tempdiarise = os.getcwd()+"/work/" + os.path.splitext(os.path.basename(src))[0] + "_diarise.json"
     cmd = f'diarise.bat "{tempwav}" "{tempdiarise}" '
     ret = subprocess.call(cmd, shell=True)
+
 
 def localdiarise(src,dest):
     dlist = []
@@ -202,12 +207,20 @@ def clearworkfolders():
     for f in os.listdir("vad"):
         os.remove(f"vad/{f}")
 
+
+def create_folder(folder_path):
+  if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+
+
 def Interactive():
     layout = [
         [sg.Text("Select Video File"),sg.In(size=(25, 1), enable_events=True, key="-File-"), sg.FileBrowse()],
         [sg.Text("_"*100)],
         [sg.Text("Select Model")],
         [sg.Radio('tiny.en','Model',key="tiny.en"),sg.Radio('base.en','Model',key="base.en"),sg.Radio('small.en','Model',key="small.en"),sg.Radio('medium.en','Model',key="medium.en",default=True), sg.Radio('large-v1','Model',key="large-v1"),sg.Radio('large-v2','Model',key="large-v2")],
+        [sg.Text("Select Method")],
+        [sg.Radio('cpu', 'Method', key="cpu"), sg.Radio('cuda', 'Method', key="cuda", default=True)],
         [sg.Text("_" * 100)],
         [sg.Button('Full Processing'),sg.Button('Transcribe Again'), sg.Button('Exit')]
     ]
@@ -223,48 +236,40 @@ def Interactive():
             dv = "cpu"
             if values["-File-"] == "":
                 continue
+            if values["cuda"]:
+                dv = 'cuda'
             if values["tiny.en"]:
                 ms = "tiny.en"
-                dv = 'cuda'
             if values["base.en"]:
                 ms = "base.en"
-                dv = 'cuda'
             if values["small.en"]:
                 ms = "small.en"
-                dv = 'cuda'
             if values["medium.en"]:
                 ms = "medium.en"
-                dv = 'cuda'
             if values["large-v1"]:
                 ms = "large-v1"
-                dv = 'cpu'
             if values["large-v2"]:
                 ms = "large-v2"
-                dv = 'cpu'
             TranscriptionPipe(values['-File-'],ms,dv)
         if event == "Transcribe Again":
             ms = "large-v2"
             dv = "cpu"
             if values["-File-"] == "":
                 continue
+            if values["cuda"]:
+                dv = 'cuda'
             if values["tiny.en"]:
                 ms = "tiny.en"
-                dv = 'cuda'
             if values["base.en"]:
                 ms = "base.en"
-                dv = 'cuda'
             if values["small.en"]:
                 ms = "small.en"
-                dv = 'cuda'
             if values["medium.en"]:
                 ms = "medium.en"
-                dv = 'cuda'
             if values["large-v1"]:
                 ms = "large-v1"
-                dv = 'cpu'
             if values["large-v2"]:
                 ms = "large-v2"
-                dv = 'cpu'
             if not doTranscribe(values['-File-'], ms, dv):
                 TranscriptionPipe(values['-File-'], ms, dv)
         if event in (None, 'Exit'):  # checks if user wants to
